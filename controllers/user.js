@@ -2,7 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-function createUser(req, res, next) {
+function createUser(req, res) {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -23,10 +23,10 @@ function createUser(req, res, next) {
     })
     .catch((error) => res.status(500).json({ error }));
 }
-async function logUser(req, res, next) {
+async function logUser(req, res) {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
-      return res.status(500).json({ status: 500, message: err.message });
+      return res.status(500).json({ message: err.message });
     }
     if (!user) {
       return res
@@ -35,12 +35,10 @@ async function logUser(req, res, next) {
     }
     bcrypt.compare(req.body.password, user.password, (err, valid) => {
       if (err) {
-        return res.status(500).json({ status: 500, message: err.message });
+        return res.status(500).json({ message: err.message });
       }
       if (!valid) {
-        return res
-          .status(401)
-          .json({ status: 401, message: "Mauvais mot de passe!" });
+        return res.status(401).json({ message: "Mauvais mot de passe!" });
       }
 
       return res.status(200).json({

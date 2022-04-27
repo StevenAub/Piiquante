@@ -7,7 +7,7 @@ function getAllSauce(req, res) {
     .catch((err) => res.status(400).json({ err: err }));
 }
 
-function getOneSauce(req, res, next) {
+function getOneSauce(req, res) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       res.status(200).json(sauce);
@@ -15,7 +15,7 @@ function getOneSauce(req, res, next) {
     .catch((err) => res.status(404).json({ err }));
 }
 
-function CreateSauce(req, res, next) {
+function CreateSauce(req, res) {
   const sauceObject = JSON.parse(req.body.sauce);
 
   delete sauceObject._id;
@@ -35,7 +35,7 @@ function CreateSauce(req, res, next) {
     });
 }
 
-function modifySauce(req, res, next) {
+function modifySauce(req, res) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (req.auth.userId !== sauce.userId) {
@@ -67,7 +67,7 @@ function modifySauce(req, res, next) {
     .catch((err) => res.status(404).json({ message: "Sauce non trouvée!" }));
 }
 
-function deleteSauce(req, res, next) {
+function deleteSauce(req, res) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
       if (sauce.userId !== req.auth.userId) {

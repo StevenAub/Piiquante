@@ -1,6 +1,6 @@
 const Sauce = require("../models/sauce");
 
-function likeSauce(req, res, next) {
+function likeSauce(req, res) {
   const liked = req.body.like;
   const userLiked = req.body.userId;
 
