@@ -17,14 +17,11 @@ function getOneSauce(req, res) {
 
 function CreateSauce(req, res) {
   const sauceObject = JSON.parse(req.body.sauce);
-
   delete sauceObject._id;
-  console.log(sauceObject);
   const sauce = new Sauce({
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
   });
-  console.log(sauce);
   sauce
     .save()
     .then(() => {
@@ -34,7 +31,6 @@ function CreateSauce(req, res) {
       res.status(400).json({ err: err });
     });
 }
-
 function modifySauce(req, res) {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
@@ -42,17 +38,27 @@ function modifySauce(req, res) {
         res.status(403).json({ message: "Requete non autorisée!" });
       } else {
         const filename = sauce.imageUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`, () => {
-          const sauceObject = req.file
-            ? {
-                ...JSON.parse(req.body.sauce),
-                imageUrl: `${req.protocol}://${req.get("host")}/images/${
-                  req.file.filename
-                }`
-              }
-            : {
-                ...req.body
-              };
+        if (req.file) {
+          fs.unlink(`images/${filename}`, () => {
+            const sauceObject = {
+              ...JSON.parse(req.body.sauce),
+              imageUrl: `${req.protocol}://${req.get("host")}/images/${
+                req.file.filename
+              }`
+            };
+            Sauce.updateOne(
+              { _id: req.params.id },
+              { ...sauceObject, _id: req.params.id }
+            )
+              .then(() =>
+                res.status(200).json({ message: "La sauce a été modifiée!" })
+              )
+              .catch((err) => res.status(404).json({ err }));
+          });
+        } else {
+          sauceObject = {
+            ...req.body
+          };
           Sauce.updateOne(
             { _id: req.params.id },
             { ...sauceObject, _id: req.params.id }
@@ -61,7 +67,7 @@ function modifySauce(req, res) {
               res.status(200).json({ message: "La sauce a été modifiée!" })
             )
             .catch((err) => res.status(404).json({ err }));
-        });
+        }
       }
     })
     .catch((err) => res.status(404).json({ message: "Sauce non trouvée!" }));

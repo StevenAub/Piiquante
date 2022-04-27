@@ -7,8 +7,6 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decodeToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodeToken.userId;
-    console.log(req.body.userId);
-    console.log(userId);
     req.auth = { userId };
     if (req.body.userId && req.body.userId !== userId) {
       return res.status(401).json({
