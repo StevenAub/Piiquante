@@ -22,6 +22,7 @@ function CreateSauce(req, res) {
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
   });
+  console.log({ ...sauceObject });
   sauce
     .save()
     .then(() => {
