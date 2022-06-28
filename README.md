@@ -2,14 +2,14 @@
 
 ## Formation OpenClassRooms
 
-## **NodeJS/MongoDB/Express**
+### **NodeJS/MongoDB/Express**
 
-# Depuis le repertoire backend, tapez la commande
+### Depuis le repertoire backend, tapez la commande
 
 `npm install`
 
-# Connexion a MongoDB via les variables d'environnements
+### Connexion a MongoDB via les variables d'environnements
 
-# Puis tapez la commande
+### Puis tapez la commande
 
 `npm start`
